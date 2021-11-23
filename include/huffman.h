@@ -92,9 +92,12 @@ void Tree_Free(PtrHtree root);
 short File_Char_Occurr(FILE *input_file, Data array[]);
 
 /* Fill empty queue with created tree nodes from data array. */
-PtrHqueue Queue_Fill_with_Tree(PtrHqueue queue, Data array[], short size);
+PtrHqueue Fill_Queue_with_Tree(PtrHqueue queue, Data array[], short size);
 
-/**/
+/* Create a parent tree with two sons.
+   Smaller son will always be on left branch.
+   Return parent tree. */
+PtrHtree Create_Parent_Tree(PtrHtree tree1, PtrHtree tree2);
 
 /**/
 

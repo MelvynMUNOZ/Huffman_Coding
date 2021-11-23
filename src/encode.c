@@ -26,13 +26,13 @@ short File_Char_Occurr(FILE *input_file, Data array[])
     return nb_char;
 }
 
-PtrHqueue Queue_Fill_with_Tree(PtrHqueue queue, Data array[], short size)
+PtrHqueue Fill_Queue_with_Tree(PtrHqueue queue, Data array[], short size)
 {
     /* Fill queue only if empty. */
     if (!queue) {
         PtrHtree node = NULL;
         for (short i = 0; i < size; i++) {
-            /* Create tree node from data array and enqueue it in queue. */
+            /* Create tree node from data array and enqueue in queue. */
             node = Tree_Create(array[i].charact, array[i].occurr);
             queue = Queue_Enqueue(queue, node);
         }
@@ -40,6 +40,21 @@ PtrHqueue Queue_Fill_with_Tree(PtrHqueue queue, Data array[], short size)
     }
     return NULL;
 }
+
+PtrHtree Create_Parent_Tree(PtrHtree tree1, PtrHtree tree2)
+{
+    PtrHtree parent = Tree_Create('$', tree1->occurr + tree2->occurr);
+    if (tree1->occurr <= tree2->occurr) {
+        parent->left = tree1;
+        parent->right = tree2;
+    } else {
+        parent->left = tree2;
+        parent->right = tree1;
+    }
+    return parent;
+}
+
+//
 
 void Compression(const char *_filename, const char *_targetname)
 {
@@ -55,9 +70,10 @@ void Compression(const char *_filename, const char *_targetname)
     Array_Copy(tmp_array, data_array, nb_char);
     Array_Sort(data_array, nb_char);
     /* Init 2 queues.
-       Fill queue1 with trees created from data_array. */
+       Fill queue1 with trees created from data_array. 
+       Queue2 is empty and will be used to enqueue each parent tree created.*/
     PtrHqueue queue1 = NULL, queue2 = NULL;
-    queue1 = Queue_Fill_with_Tree(queue1, data_array, nb_char);
+    queue1 = Fill_Queue_with_Tree(queue1, data_array, nb_char);
         Queue_Display(queue1);
     /* Build Huffman tree using 2 queues methode. */
     PtrHtree Huff_Tree = NULL;
