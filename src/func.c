@@ -123,9 +123,9 @@ PtrHqueue Queue_Enqueue(PtrHqueue queue, PtrHtree tree)
     }
     new->next = NULL;
     new->tree = tree;
-    /* If queue is empty. */
     if (!queue)
         return new;
+    /* If queue is not empty, add at the end of queue. */
     else {
         PtrHqueue tmp = queue;
         while (tmp->next)
@@ -173,6 +173,7 @@ PtrHtree Tree_Create(unsigned char c, unsigned occ)
     }
     new->charact = c;
     new->occurr = occ;
+    new->nbits = 0;
     new->left = NULL; new->right = NULL;
     return new;
 }

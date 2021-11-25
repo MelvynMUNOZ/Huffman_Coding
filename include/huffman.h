@@ -27,14 +27,16 @@ typedef struct _data {
 typedef struct _htree {
     unsigned char charact;  /* Initial character */
     unsigned occurr;        /* Character occurrence */
+    unsigned code;          /* Huffman code */
+    unsigned nbits;         /* Number of bits needed for Huffman code */
     struct _htree *left;    /* Left son in binary tree */
     struct _htree *right;   /* Right son in binary tree */
 } Htree, *PtrHtree;
 
 /* Queue of tree nodes to build huffman tree. */
-typedef struct _queue {
+typedef struct _hqueue {
     PtrHtree tree;          /* Huffman tree node */
-    struct _queue *next;    /* Next in queue */
+    struct _hqueue *next;   /* Next in queue */
 } Hqueue, *PtrHqueue;
 
 
@@ -63,11 +65,11 @@ void Array_Sort(Data array[], short size);
 int Array_Display(Data array[], short size);
 
 /* Enqueue tree node in queue.
-   Return queue with the new tree node. */
+   Return updated queue. */
 PtrHqueue Queue_Enqueue(PtrHqueue queue, PtrHtree tree);
 
-/* Dequeue tree node from queue.
-   Return the queue. */
+/* Dequeue node from queue.
+   Return updated queue. */
 PtrHqueue Queue_Dequeue(PtrHqueue queue);
 
 /* Display the queue.
@@ -85,7 +87,7 @@ void Tree_VDisplay(PtrHtree root, int level);
 void Tree_Free(PtrHtree root);
 
 
-/*************** File : huff_encode.c ***************/
+/*************** File : encode.c ***************/
 
 /* Store occurrence of characters from input_file in data array.
    Return number of different characters from input_file. */
@@ -99,13 +101,16 @@ PtrHqueue Fill_Queue_with_Tree(PtrHqueue queue, Data array[], short size);
    Return parent tree. */
 PtrHtree Create_Parent_Tree(PtrHtree tree1, PtrHtree tree2);
 
-/**/
+/* Build Huffman tree using two queues method.
+   Return pointer to tree in the last node of queue2 :
+   root of huffman binary tree. */
+PtrHtree Build_Huffman_Tree(PtrHqueue queue1, PtrHqueue queue2, short size);
 
 /* Compress input file (.txt) into target binary file (.hff). */
 void Compression(const char *_filename, const char *_targetname);
 
 
-/*************** File : huff_decode.c ***************/
+/*************** File : decode.c ***************/
 
 /* Decompress input binary file (.hff) into target file (.txt). */
 void Decompression(const char *_filename, const char *_targetname);

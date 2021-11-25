@@ -54,7 +54,50 @@ PtrHtree Create_Parent_Tree(PtrHtree tree1, PtrHtree tree2)
     return parent;
 }
 
-//
+PtrHtree Build_Huffman_Tree(PtrHqueue queue1, PtrHqueue queue2, short size)
+{
+    /* Build huffman tree takes size-1 steps, with size the size of queue1 at first. */
+    for (short i = 0; i < size -1; i++) {
+        /* If queue2 is empty, create parent node with two first nodes of queue1.
+           Dequeue twice queue2 and enqueue the parent node in queue2. */
+        if (!queue2){
+
+        }
+        /* If queue1 is empty, create parent node with two first nodes of queue2.
+           Dequeue twice queue2 and enqueue the parent node in queue2. */
+        if (!queue1) {
+
+        }
+        /* If first node of queue1 is equal or smaller than first node of queue2. */
+        if (queue1->tree->occurr <= queue2->tree->occurr) {
+            /* Create parent node with two first nodes of queue1.
+               Dequeue queue1 twice. Enqueue parent node in queue2. */
+            if (queue1->next->tree->occurr < queue2->tree->occurr) {
+
+            }
+            /* Else, create parent node with first node of queue1 and first node of queue2.
+               Dequeue queue1 and queue2. Enqueue parent node in queue2. */
+            else {
+
+            }
+        }
+        /* If first node of queue1 is greater than first node of queue2. */
+        else {
+            /* Create parent node with two first nodes of queue2.
+               Dequeue queue2 twice. Enqueue parent node in queue2. */
+            if (queue2->next->tree->occurr < queue1->tree->occurr) {
+
+            }
+            /* Else, create parent node with first node of queue1 and first node of queue2.
+               Dequeue queue1 and queue2. Enqueue parent node in queue2. */
+            else {
+
+            }
+        }
+    }
+    /* Last node of queue2 contains the root of huffman tree. */
+    return queue2->tree;
+}
 
 void Compression(const char *_filename, const char *_targetname)
 {
@@ -74,8 +117,7 @@ void Compression(const char *_filename, const char *_targetname)
        Queue2 is empty and will be used to enqueue each parent tree created.*/
     PtrHqueue queue1 = NULL, queue2 = NULL;
     queue1 = Fill_Queue_with_Tree(queue1, data_array, nb_char);
-        Queue_Display(queue1);
-    /* Build Huffman tree using 2 queues methode. */
+    /* Build Huffman tree using two queues method. */
     PtrHtree Huff_Tree = NULL;
 
     fclose(input_file);
