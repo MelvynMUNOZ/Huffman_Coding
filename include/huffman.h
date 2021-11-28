@@ -4,8 +4,8 @@
  * CY TECH PREING 2 MI
  */
 
-#ifndef huffman_h
-#define huffman_h
+#ifndef HUFFMAN_H
+#define HUFFMAN_H
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -13,7 +13,8 @@
 #include <errno.h>
 
 /* Max value for extended ASCII 0-255 */
-#define NB_MAX_CHAR 256     
+#define NB_MAX_CHAR 256
+
 
 /*********************** STRUCTURES ***********************/
 
@@ -21,7 +22,7 @@
 typedef struct _data {
     unsigned char charact;  /* Initial character */
     unsigned occurr;        /* Character occurrence */
-} Data;
+} data_t;
 
 /* Huffman tree nodes. */
 typedef struct _htree {
@@ -31,13 +32,13 @@ typedef struct _htree {
     unsigned nbits;         /* Number of bits needed for Huffman code */
     struct _htree *left;    /* Left son in binary tree */
     struct _htree *right;   /* Right son in binary tree */
-} Htree, *PtrHtree;
+} htree_t, *ptrhtree;
 
 /* Queue of tree nodes to build huffman tree. */
 typedef struct _hqueue {
-    PtrHtree tree;          /* Huffman tree node */
+    ptrhtree tree;          /* Huffman tree node */
     struct _hqueue *next;   /* Next in queue */
-} Hqueue, *PtrHqueue;
+} hqueue_t, *ptrhqueue;
 
 
 /************************ FUNCTIONS ***********************/
@@ -50,69 +51,71 @@ void help();
 /* Print version and authors of project. */
 void version();
 
-/* Check if _filename and _targetname are valid. 
-   If _filename is valid, open it and return it. */
-FILE *Check_Files(const char *_filename, const char *_targetname, const char *_ext1, const char *_ext2);
+/* Check if __filename and __targetname are valid. 
+   If __filename is valid, open file stream and return it. */
+FILE *check_files(const char *__filename, const char *__targetname, const char *__ext1, const char *__ext2);
 
 /* Copy in new data array only read characters and their occurrence. */
-void Array_Copy(Data array[], Data cpy_array[], short size);
+void array_copy(data_t array[], data_t cpy_array[], short size);
 
 /* Sort data array by insertion in ascending order. */
-void Array_Sort(Data array[], short size);
+void array_sort(data_t array[], short size);
 
-/* Display the data array.
-   Return number of printed elements. */
-int Array_Display(Data array[], short size);
+/* Display the data array. */
+void array_display(data_t array[], short size);
 
-/* Enqueue tree node in queue.
-   Return updated queue. */
-PtrHqueue Queue_Enqueue(PtrHqueue queue, PtrHtree tree);
+/* Push new node in priority queue.
+   Return updated priority queue. */
+ptrhqueue queue_push(ptrhqueue queue, ptrhtree tree);
 
-/* Dequeue node from queue.
-   Return updated queue. */
-PtrHqueue Queue_Dequeue(PtrHqueue queue);
+/* Pop first node from priority queue.
+   Return updated priority queue. */
+ptrhqueue queue_pop(ptrhqueue queue);
 
-/* Display the queue.
-   Return number of printed elements. */
-int Queue_Display(PtrHqueue queue);
+/* Display the queue. */
+void queue_display(ptrhqueue queue);
+
+/* Free allocated memory of tree node in each queue node. 
+   Free the entire queue. */
+void queue_free(ptrhqueue queue);
 
 /* Create tree node with a character and its occurence.
    Return the new tree node.*/
-PtrHtree Tree_Create(unsigned char c, unsigned occ);
+ptrhtree tree_create(unsigned char c, unsigned occ);
 
 /* Display binary tree vertically. */
-void Tree_VDisplay(PtrHtree root, int level);
+void tree_vdisplay(ptrhtree root, int level);
 
 /* Free the entire binary tree. */
-void Tree_Free(PtrHtree root);
+void tree_free(ptrhtree root);
 
 
 /*************** File : encode.c ***************/
 
 /* Store occurrence of characters from input_file in data array.
    Return number of different characters from input_file. */
-short File_Char_Occurr(FILE *input_file, Data array[]);
+short file_char_occurr(FILE *input_file, data_t array[]);
 
 /* Fill empty queue with created tree nodes from data array. */
-PtrHqueue Fill_Queue_with_Tree(PtrHqueue queue, Data array[], short size);
+ptrhqueue fill_queue_with_tree(ptrhqueue queue, data_t array[], short size);
 
 /* Create a parent tree with two sons.
    Smaller son will always be on left branch.
    Return parent tree. */
-PtrHtree Create_Parent_Tree(PtrHtree tree1, PtrHtree tree2);
+ptrhtree create_parent_tree(ptrhtree tree1, ptrhtree tree2);
 
-/* Build Huffman tree using two queues method.
-   Return pointer to tree in the last node of queue2 :
-   root of huffman binary tree. */
-PtrHtree Build_Huffman_Tree(PtrHqueue queue1, PtrHqueue queue2, short size);
+/* Build Huffman tree using priority queue method.
+   Return pointer to tree in the last node : root of
+   huffman binary tree. */
+ptrhtree build_huffman_tree(ptrhqueue queue);
 
 /* Compress input file (.txt) into target binary file (.hff). */
-void Compression(const char *_filename, const char *_targetname);
+void compression(const char *__filename, const char *__targetname);
 
 
 /*************** File : decode.c ***************/
 
 /* Decompress input binary file (.hff) into target file (.txt). */
-void Decompression(const char *_filename, const char *_targetname);
+void decompression(const char *__filename, const char *__targetname);
 
 #endif

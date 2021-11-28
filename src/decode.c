@@ -6,9 +6,9 @@
 
 #include "../include/huffman.h"
 
-void Decompression(const char *_filename, const char *_targetname)
+void decompression(const char *__filename, const char *__targetname)
 {
     /* Check for valid file name and extensions. */
     FILE * input_file = NULL;
-    input_file = Check_Files(_filename, _targetname, ".hff", ".txt");
+    input_file = check_files(__filename, __targetname, ".hff", ".txt");
 }

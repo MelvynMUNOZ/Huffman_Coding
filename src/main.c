@@ -15,15 +15,15 @@ int main(int argc, char **argv)
             version();
         else {
             fprintf(stderr, "\033[31m\x1b[1mError:\x1b[0m\033[0m \x1b[1munvalid arguments:\x1b[0m\n"
-            "Rman\x1b[1m./bin/huffman --help\x1b[0m » for more information.\n\n");
+            "Run « \x1b[1m./bin/huffman --help\x1b[0m » for more information.\n\n");
             exit(EXIT_FAILURE);
         }
     }
     if (argv[1] && argv[2] && argv[3]) {
         if (strcmp(argv[1], "-c") == 0)
-            Compression(argv[2], argv[3]);
+            compression(argv[2], argv[3]);
         else if (strcmp(argv[1], "-d") == 0)
-            Decompression(argv[2], argv[3]);
+            decompression(argv[2], argv[3]);
         else {
             fprintf(stderr, "\033[31m\x1b[1mError:\x1b[0m\033[0m \x1b[1munvalid arguments:\x1b[0m\n"
             "Run « \x1b[1m./bin/huffman --help\x1b[0m » for more information.\n\n");
