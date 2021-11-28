@@ -8,9 +8,9 @@ Compressing text files into binary files, and decompressing those binary files b
 
 Make sure you installed Git, if not :
 
-* For Linux : https://youtu.be/PLQQ3tJwBJg
+* **Linux** : https://youtu.be/PLQQ3tJwBJg
 
-* For Windows : https://youtu.be/2j7fD92g-gE
+* **Windows** : https://youtu.be/2j7fD92g-gE
 
 Clone this repository on your desktop :
 ```bash
@@ -51,7 +51,7 @@ $  ./bin/huffman --help
 ```
 To **clean** the entire project directory, run :
 ```bash
-$  make cleanup
+$  make clean
 ```
 
 ### AUTHORS
