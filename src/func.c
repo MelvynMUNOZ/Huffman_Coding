@@ -69,12 +69,10 @@ FILE *check_files(const char *__filename, const char *__targetname, const char *
 void array_copy(data_t array[], data_t cpy_array[], short size)
 {
     for (short i = 0, j = 0; i < NB_MAX_CHAR && j < size; i++) {
-        /* Copy only if there is an occurrence in array. */
-        if (array[i].occurr == 0) {
-            continue;
-        }
+        /* Copy only if there is an freqence in array. */
+        if (array[i].freq == 0) continue;
         cpy_array[j].charact = array[i].charact;
-        cpy_array[j].occurr = array[i].occurr;
+        cpy_array[j].freq = array[i].freq;
         j++;
     }
 }
@@ -87,7 +85,7 @@ void array_sort(data_t array[], short size)
     for (short i = 1; i < size; i++) {
         tmp = array[i];
         j = i-1;
-        while ((j >= 0) && (tmp.occurr < array[j].occurr)) {
+        while ((j >= 0) && (tmp.freq < array[j].freq)) {
             array[j+1] = array[j];
             j--;
         }
@@ -101,11 +99,14 @@ void array_display(data_t array[], short size)
         printf("Empty array.\n");
         return;
     }
-    printf("Nb different characters : %i\n",size);    
-    for (short i = 0; i < size; i++) {  
-        printf("%d\t%c / %u\n", i, array[i].charact, array[i].occurr); 
+    short n = 0;
+    for (short i = 0; i < size; i++) { 
+        if (array[i].freq == 0) continue;
+        printf("%d\t%c | %u\t | %u\t | %u\n",
+        i, array[i].charact, array[i].freq, array[i].code, array[i].nbits);
+        n++;
     }
-    printf("\n");
+    printf("Nb characters : %i\n\n", n);
 }
 
 ptrhqueue queue_push(ptrhqueue queue, ptrhtree tree)
@@ -123,7 +124,7 @@ ptrhqueue queue_push(ptrhqueue queue, ptrhtree tree)
         return new;
     /* Push element in the priority queue. */
     ptrhqueue tmp = queue;
-    while (tmp->next && tmp->next->tree->occurr < new->tree->occurr)
+    while (tmp->next && tmp->next->tree->freq < new->tree->freq)
         tmp = tmp->next;
     new->next = tmp->next;
     tmp->next = new;
@@ -148,7 +149,7 @@ void queue_display(ptrhqueue queue)
     }
     ptrhqueue p = queue;
     while (p) {
-        printf("%c/%u | ", p->tree->charact, p->tree->occurr);   
+        printf("%c/%u | ", p->tree->charact, p->tree->freq);   
         p = p->next;
     }
     printf("\n\n");
@@ -163,7 +164,7 @@ void queue_free(ptrhqueue queue)
     }
 }
 
-ptrhtree tree_create(unsigned char c, unsigned occ)
+ptrhtree tree_create(unsigned char ch, unsigned freq)
 {
     /* Memory allocation. */
     ptrhtree new = calloc(1, sizeof(*new));
@@ -173,9 +174,14 @@ ptrhtree tree_create(unsigned char c, unsigned occ)
         exit(EXIT_FAILURE);
     }
     /* Initialize new element. */
-    *new = (htree_t) {.charact = c, .occurr = occ, .left = NULL, .nbits = 0, .code = 0, .right = NULL};
+    *new = (htree_t) {.charact = ch, .freq = freq, .left = NULL, .right = NULL};
     new->left = NULL; new->right = NULL;
     return new;
+}
+
+int tree_is_leaf(ptrhtree tree)
+{
+    return (!tree->left && !tree->right) ? 1 : 0;
 }
 
 void tree_vdisplay(ptrhtree root, int level)
@@ -184,7 +190,7 @@ void tree_vdisplay(ptrhtree root, int level)
         /* DFS preorder. */
         for (int i = 0; i < level; i++)
             printf((i == level-1) ? "└──" : "   ");
-        printf("%c/%u\n", root->charact, root->occurr);
+        printf("%c/%u\n", root->charact, root->freq);
         tree_vdisplay(root->left, level+1);
         tree_vdisplay(root->right, level+1);
     }

@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include <errno.h>
 
 /* Max value for extended ASCII 0-255 */
@@ -18,18 +19,18 @@
 
 /*********************** STRUCTURES ***********************/
 
-/* Array to store characters and their occurrence. */
+/* Dictionary to store data from characters. */
 typedef struct _data {
     unsigned char charact;  /* Initial character */
-    unsigned occurr;        /* Character occurrence */
+    unsigned freq;        	/* Character frequence */
+	unsigned code;          /* Huffman code */
+    unsigned nbits;         /* Number of bits needed for Huffman code */
 } data_t;
 
 /* Huffman tree nodes. */
 typedef struct _htree {
     unsigned char charact;  /* Initial character */
-    unsigned occurr;        /* Character occurrence */
-    unsigned code;          /* Huffman code */
-    unsigned nbits;         /* Number of bits needed for Huffman code */
+    unsigned freq;        	/* Character frequence */
     struct _htree *left;    /* Left son in binary tree */
     struct _htree *right;   /* Right son in binary tree */
 } htree_t, *ptrhtree;
@@ -55,7 +56,7 @@ void version();
    If __filename is valid, open file stream and return it. */
 FILE *check_files(const char *__filename, const char *__targetname, const char *__ext1, const char *__ext2);
 
-/* Copy in new data array only read characters and their occurrence. */
+/* Copy in new data array only read characters and their frequence. */
 void array_copy(data_t array[], data_t cpy_array[], short size);
 
 /* Sort data array by insertion in ascending order. */
@@ -79,9 +80,12 @@ void queue_display(ptrhqueue queue);
    Free the entire queue. */
 void queue_free(ptrhqueue queue);
 
-/* Create tree node with a character and its occurence.
+/* Create tree node with a character and its frequence.
    Return the new tree node.*/
-ptrhtree tree_create(unsigned char c, unsigned occ);
+ptrhtree tree_create(unsigned char ch, unsigned freq);
+
+/* Check if given tree is a leaf. */
+int tree_is_leaf(ptrhtree tree);
 
 /* Display binary tree vertically. */
 void tree_vdisplay(ptrhtree root, int level);
@@ -92,11 +96,11 @@ void tree_free(ptrhtree root);
 
 /*************** File : encode.c ***************/
 
-/* Store occurrence of characters from input_file in data array.
+/* Store frequence of characters from input_file in dico.
    Return number of different characters from input_file. */
-short file_char_occurr(FILE *input_file, data_t array[]);
+short file_char_freq(FILE *input_file, data_t dico[]);
 
-/* Fill empty queue with created tree nodes from data array. */
+/* Fill queue with created tree nodes from data array. */
 ptrhqueue fill_queue_with_tree(ptrhqueue queue, data_t array[], short size);
 
 /* Create a parent tree with two sons.
@@ -108,6 +112,10 @@ ptrhtree create_parent_tree(ptrhtree tree1, ptrhtree tree2);
    Return pointer to tree in the last node : root of
    huffman binary tree. */
 ptrhtree build_huffman_tree(ptrhqueue queue);
+
+/* Get Huffman code and nbits of each characters (leaves in tree).
+   Store in dico at character index. */
+void get_huffman_code(ptrhtree root, data_t dico[], unsigned code, unsigned nbits);
 
 /* Compress input file (.txt) into target binary file (.hff). */
 void compression(const char *__filename, const char *__targetname);
