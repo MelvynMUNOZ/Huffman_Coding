@@ -118,14 +118,11 @@ ptrhtree build_huffman_tree(ptrhqueue queue);
 void get_huffman_code(ptrhtree root, data_t hdico[], unsigned code, unsigned nbits);
 
 /* Write huffman dictionary at beginning of output file. */
-void write_dico_in_output_file(const char *__outputname, data_t hdico[], short size);
+void write_dico_in_output_file(FILE *output_file, data_t hdico[], short size);
 
 /* Encode input file into output file.
    Write binary huffman code of each charaters from input file in output file. */
-void encoding(const char *__inputname, const char *__outputname, data_t hdico[]);
-
-/* Encode input file into output file using binary shifts and binary operators. */
-void encoding(const char *__inputname, const char *__outputname, data_t hdico[]);
+void encoding(const char *__inputname, const char *__outputname, data_t hdico[], short size);
 
 /* Compress input file (.txt) into output binary file (.hff). */
 void compression(const char *__inputname, const char *__outputname);

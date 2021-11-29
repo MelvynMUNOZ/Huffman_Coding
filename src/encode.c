@@ -95,26 +95,17 @@ void get_huffman_code(ptrhtree root, data_t hdico[], unsigned bin_code, unsigned
     }
 }
 
-void write_dico_in_output_file(const char *__outputname, data_t hdico[], short size)
+void write_dico_in_output_file(FILE *output_file, data_t hdico[], short size)
 {
-    FILE *output_file = NULL;
-    /* Open stream to __outputname, write mode. */
-    output_file = fopen(__outputname, "w");
-    if (output_file == NULL) {
-        fprintf(stderr, "\033[31m\x1b[1mError:\x1b[0m\033[0m \x1b[1m%s:\x1b[0m %s.\n\n"
-        , __outputname, strerror(errno));
-        exit(EXIT_FAILURE);
-    }
     /* Write characters and their frequence at beginning of output_file. */
     fprintf(output_file, "%i|", size);
     for (short i = 0; i < NB_MAX_CHAR; i++){
         if (hdico[i].freq == 0) continue;
         fprintf(output_file, "%u;%c|", hdico[i].freq, hdico[i].charact);            
     }
-    fclose(output_file);
 }
 
-void encoding(const char *__inputname, const char *__outputname, data_t hdico[])
+void encoding(const char *__inputname, const char *__outputname, data_t hdico[], short size)
 {
     float nbits_input = 0, nbits_output = 0; 
     FILE *input_file = NULL, *output_file = NULL;
@@ -125,13 +116,15 @@ void encoding(const char *__inputname, const char *__outputname, data_t hdico[])
         , __inputname, strerror(errno));
         exit(EXIT_FAILURE);
     }
-    /* Open stream to __outputname, binary write mode, set at end of file. */
-    output_file = fopen(__outputname, "ab");
+    /* Open stream to __outputname, binary write mode. */
+    output_file = fopen(__outputname, "wb");
     if (output_file == NULL) {
         fprintf(stderr, "\033[31m\x1b[1mError:\x1b[0m\033[0m \x1b[1m%s:\x1b[0m %s.\n\n"
         , __outputname, strerror(errno));
         exit(EXIT_FAILURE);
     }
+    /* Write huffman dictionary at beginning of output file. */
+    write_dico_in_output_file(output_file, hdico, size);
     /* Read each character from input_file and write its huffman code in output_file. */
     int read_char = 0;
     unsigned char cbin = 0;
@@ -148,10 +141,7 @@ void encoding(const char *__inputname, const char *__outputname, data_t hdico[])
             /* Shift buffer to right by buffer_size - 8, to get the first 8 bits in a char to
                write it. */
             cbin = (buffer >> buffer_size);
-
-            /* try with fwrite */
-            fputc(cbin, output_file); 
-
+            fwrite(&cbin, 1, 1, output_file);
             /* Update count of nbits written in output_file. */
             nbits_output += 8;
         }
@@ -161,10 +151,7 @@ void encoding(const char *__inputname, const char *__outputname, data_t hdico[])
     /* If buffer ends up not full (under 8), concat bits 0 to fulfill it, then write it. */
     if (buffer_size && buffer_size < 8) {
         cbin = (buffer << (8-buffer_size));
-        
-        /* try with fwrite */
-        fputc(cbin, output_file);
-        
+        fwrite(&cbin, 1, 1, output_file);
         /* Update count of nbits written in output_file. */
         nbits_output += 8;
     }
@@ -204,10 +191,8 @@ void compression(const char *__inputname, const char *__outputname)
     get_huffman_code(huffman_tree, hdico, 0, 0);
         /* Check. array_display(hdico, NB_MAX_CHAR); */
     tree_free(huffman_tree);
-    /* Write huffman dictionary at beginning of output file. */
-    write_dico_in_output_file(__outputname, hdico, nb_char);
     /* Encode input file into output file. */
-    encoding(__inputname, __outputname, hdico);
+    encoding(__inputname, __outputname, hdico, nb_char);
     /* Time in seconds. */
     end = clock();
     time_taken = (double)(end - start) / CLOCKS_PER_SEC;
