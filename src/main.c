@@ -1,6 +1,6 @@
-/*
+/**
  * Source file : main.c
- * CAUSSE Raphael
+ * MUNOZ Melvyn, CAUSSE Raphael
  * CY TECH PREING 2 MI
  */
 

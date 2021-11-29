@@ -1,6 +1,6 @@
-/*
+/**
  * Header file : huffman.h
- * CAUSSE Raphael
+ * MUNOZ Melvyn, CAUSSE Raphael
  * CY TECH PREING 2 MI
  */
 
@@ -22,15 +22,15 @@
 /* Dictionary to store data from characters. */
 typedef struct _data {
     unsigned char charact;  /* Initial character */
-    unsigned freq;        	/* Character frequence */
-	unsigned code;          /* Huffman code */
+    unsigned freq;        	 /* Character frequence */
+	 unsigned hcode;          /* Huffman code */
     unsigned nbits;         /* Number of bits needed for Huffman code */
 } data_t;
 
 /* Huffman tree nodes. */
 typedef struct _htree {
     unsigned char charact;  /* Initial character */
-    unsigned freq;        	/* Character frequence */
+    unsigned freq;        	 /* Character frequence */
     struct _htree *left;    /* Left son in binary tree */
     struct _htree *right;   /* Right son in binary tree */
 } htree_t, *ptrhtree;
@@ -52,9 +52,9 @@ void help();
 /* Print version and authors of project. */
 void version();
 
-/* Check if __filename and __targetname are valid. 
-   If __filename is valid, open file stream and return it. */
-FILE *check_files(const char *__filename, const char *__targetname, const char *__ext1, const char *__ext2);
+/* Check if __inputname and __outputname are valid. 
+   If __inputname is valid, open stream and return it. */
+FILE *check_files(const char *__inputname, const char *__outputname, const char *__ext1, const char *__ext2);
 
 /* Copy in new data array only read characters and their frequence. */
 void array_copy(data_t array[], data_t cpy_array[], short size);
@@ -98,7 +98,7 @@ void tree_free(ptrhtree root);
 
 /* Store frequence of characters from input_file in dico.
    Return number of different characters from input_file. */
-short file_char_freq(FILE *input_file, data_t dico[]);
+short file_char_freq(FILE *input_file, data_t hdico[]);
 
 /* Fill queue with created tree nodes from data array. */
 ptrhqueue fill_queue_with_tree(ptrhqueue queue, data_t array[], short size);
@@ -113,17 +113,27 @@ ptrhtree create_parent_tree(ptrhtree tree1, ptrhtree tree2);
    huffman binary tree. */
 ptrhtree build_huffman_tree(ptrhqueue queue);
 
-/* Get Huffman code and nbits of each characters (leaves in tree).
-   Store in dico at character index. */
-void get_huffman_code(ptrhtree root, data_t dico[], unsigned code, unsigned nbits);
+/* Get Huffman code and nbits of each characters.
+   Store them in dico at character index. */
+void get_huffman_code(ptrhtree root, data_t hdico[], unsigned code, unsigned nbits);
 
-/* Compress input file (.txt) into target binary file (.hff). */
-void compression(const char *__filename, const char *__targetname);
+/* Write huffman dictionary at beginning of output file. */
+void write_dico_in_output_file(const char *__outputname, data_t hdico[], short size);
+
+/* Encode input file into output file.
+   Write binary huffman code of each charaters from input file in output file. */
+void encoding(const char *__inputname, const char *__outputname, data_t hdico[]);
+
+/* Encode input file into output file using binary shifts and binary operators. */
+void encoding(const char *__inputname, const char *__outputname, data_t hdico[]);
+
+/* Compress input file (.txt) into output binary file (.hff). */
+void compression(const char *__inputname, const char *__outputname);
 
 
 /*************** File : decode.c ***************/
 
-/* Decompress input binary file (.hff) into target file (.txt). */
-void decompression(const char *__filename, const char *__targetname);
+/* Decompress input binary file (.hff) into output file (.txt). */
+void decompression(const char *__inputname, const char *__outputname);
 
 #endif

@@ -1,6 +1,6 @@
-/*
+/**
  * Source file : func.c
- * CAUSSE Raphael
+ * MUNOZ Melvyn, CAUSSE Raphael
  * CY TECH PREING 2 MI
  */
 
@@ -34,30 +34,30 @@ void version()
     exit(EXIT_SUCCESS);
 }
 
-FILE *check_files(const char *__filename, const char *__targetname, const char *__exten1, const char *__exten2)
+FILE *check_files(const char *__inputname, const char *__outputname, const char *__exten1, const char *__exten2)
 {
     FILE *input_file = NULL;
-    /* Open __filename file to check if it exist. */
-    input_file = fopen(__filename, "r");
+    /* Open stream to __inputname to check if it exist. */
+    input_file = fopen(__inputname, "r");
     if (input_file == NULL) {
         fprintf(stderr, "\033[31m\x1b[1mError:\x1b[0m\033[0m \x1b[1m%s:\x1b[0m %s.\n\n"
-        , __filename, strerror(errno));
+        , __inputname, strerror(errno));
         exit(EXIT_FAILURE);
     }
     short ext_check = strlen(__exten1)-1;
-    /* Check if __targetname extension is valid. */
-    if (__targetname[strlen(__targetname)-1] != __exten2[ext_check] 
-    || __targetname[strlen(__targetname)-2] != __exten2[ext_check-1] 
-    || __targetname[strlen(__targetname)-3] != __exten2[ext_check-2]) {
+    /* Check if __outputname extension is valid. */
+    if (__outputname[strlen(__outputname)-1] != __exten2[ext_check] 
+    || __outputname[strlen(__outputname)-2] != __exten2[ext_check-1] 
+    || __outputname[strlen(__outputname)-3] != __exten2[ext_check-2]) {
         fprintf(stderr, "\033[31m\x1b[1mError:\x1b[0m\033[0m \x1b[1munvalid extension:\x1b[0m\n"
         "Please enter target file with \x1b[1m(%s)\x1b[0m extension.\n"
         "Run « \x1b[1m./bin/huffman --help\x1b[0m » information.\n\n", __exten2);
         exit(EXIT_FAILURE);
     }
-    /* Check if __filename extension is valid. */
-    if (__filename[strlen(__filename)-1] != __exten1[ext_check] 
-    || __filename[strlen(__filename)-2] != __exten1[ext_check-1] 
-    || __filename[strlen(__filename)-3] != __exten1[ext_check-2]) {
+    /* Check if __inputname extension is valid. */
+    if (__inputname[strlen(__inputname)-1] != __exten1[ext_check] 
+    || __inputname[strlen(__inputname)-2] != __exten1[ext_check-1] 
+    || __inputname[strlen(__inputname)-3] != __exten1[ext_check-2]) {
         fprintf(stderr, "\033[31m\x1b[1mError:\x1b[0m\033[0m \x1b[1munvalid extension:\x1b[0m\n"
         "Please enter input file with \x1b[1m(%s)\x1b[0m extension.\n"
         "Run « \x1b[1m./bin/huffman --help\x1b[0m » for more information.\n\n", __exten1);
@@ -103,7 +103,7 @@ void array_display(data_t array[], short size)
     for (short i = 0; i < size; i++) { 
         if (array[i].freq == 0) continue;
         printf("%d\t%c | %u\t | %u\t | %u\n",
-        i, array[i].charact, array[i].freq, array[i].code, array[i].nbits);
+        i, array[i].charact, array[i].freq, array[i].hcode, array[i].nbits);
         n++;
     }
     printf("Nb characters : %i\n\n", n);

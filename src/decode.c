@@ -1,15 +1,15 @@
-/*
+/**
  * Source file : decode.c
- * CAUSSE Raphael
+ * MUNOZ Melvyn, CAUSSE Raphael
  * CY TECH PREING 2 MI
  */
 
 #include "../include/huffman.h"
 
-void decompression(const char *__filename, const char *__targetname)
+void decompression(const char *__inputname, const char *__outputname)
 {
-    /* Check for valid file name and extensions. */
+    /* Check for valid file names and extensions. */
     FILE * input_file = NULL;
-    input_file = check_files(__filename, __targetname, ".hff", ".txt");
-    printf("Decompressing %s ...\n", __filename);
+    input_file = check_files(__inputname, __outputname, ".hff", ".txt");
+    printf("Decompressing %s ...\n", __inputname);
 }
